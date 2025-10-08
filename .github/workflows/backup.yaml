@@ -1,25 +1,28 @@
+
 name: Backup Firestore
 
 on:
   push:
     branches:
       - master
-  jobs:
-    backup:
-      runs-on: ubuntu-latest
-      env:
-        PROJECT_ID: pristine-ally-430511-j6
-        BUCKET: gs://backup-bucket-money-tracker
-      steps:
-        - uses: google-github-actions/setup-gcloud@v2
-          with:
-            service_account_key: ${{ secrets.GCP_SA_KEY }}
-            export_default_credentials: true
-        - run: gcloud info
-        - run: gcloud config set project $PROJECT_ID
-        # Ensure the service account has roles/datastore.importExportAdmin and roles/storage.admin
-        - name: Check IAM permissions
-          run: |
-            gcloud projects get-iam-policy $PROJECT_ID --flatten="bindings[].members" --format='table(bindings.role)' --filter="bindings.members:serviceAccount:${{ secrets.GCP_SA_KEY_EMAIL }}"
-        - run: gcloud firestore export $BUCKET
-        - name: Check IAM permissions
+  schedule:
+    - cron: '25 * * * *'
+
+env:
+  PROJECT_ID: pristine-ally-430511-j6
+  BUCKET: gs://backup-bucket-money-tracker
+  
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: google-github-actions/setup-gcloud@v2
+      with:
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+    - run: gcloud info
+    - run: gcloud config set project $PROJECT_ID
+    - name: Check IAM permissions
+      run: |
+        gcloud projects get-iam-policy $PROJECT_ID --flatten="bindings[].members" --format='table(bindings.role)' --filter="bindings.members:serviceAccount:${{ secrets.GCP_SA_KEY_EMAIL }}"
+    - run: gcloud firestore export $BUCKET

@@ -2,11 +2,11 @@ name: Backup Firestore
 
 on:
   schedule:
-    - cron:  //YOUR-INTERVAL//
+    - cron: '12 * * * *'
 
 env:
-  PROJECT_ID: YOUR-PROJECT
-  BUCKET: gs://YOUR-BUCKET
+  PROJECT_ID: pristine-ally-430511-j6
+  BUCKET: gs://backup-bucket-money-tracker
   
 jobs:
   backup:

@@ -10,7 +10,7 @@ on:
 
 env:
   BUCKET: backup-bucket-money-tracker
-  BUCKET: gs://backup-bucket-money-tracker
+  # BUCKET: gs://backup-bucket-money-tracker
   
 jobs:
   backup:

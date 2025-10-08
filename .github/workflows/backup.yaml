@@ -5,10 +5,11 @@ on:
     branches:
       - master
   schedule:
+    # Runs the workflow every hour at minute 25
     - cron: '25 * * * *'
 
 env:
-  PROJECT_ID: pristine-ally-430511-j6
+  BUCKET: backup-bucket-money-tracker
   BUCKET: gs://backup-bucket-money-tracker
   
 jobs:
@@ -21,4 +22,8 @@ jobs:
         export_default_credentials: true
     - run: gcloud info
     - run: gcloud config set project $PROJECT_ID
+    # Ensure the service account has roles/datastore.importExportAdmin and roles/storage.admin
+    - name: Check IAM permissions
+      run: |
+        gcloud projects get-iam-policy $PROJECT_ID --flatten="bindings[].members" --format='table(bindings.role)' --filter="bindings.members:serviceAccount:${{ secrets.GCP_SA_KEY_EMAIL }}"
     - run: gcloud firestore export $BUCKET

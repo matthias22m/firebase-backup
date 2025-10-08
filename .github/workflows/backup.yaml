@@ -8,7 +8,7 @@ on:
     - cron: '25 * * * *'
 
 env:
-  PROJECT_ID: pristine-ally-430511-j6
+  PROJECT_ID: money-tracker-app-89c86
   BUCKET: gs://backup-bucket-money-tracker
   
 jobs:
